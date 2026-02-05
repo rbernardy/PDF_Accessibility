@@ -141,7 +141,7 @@ class PDFAccessibility(Stack):
                                       cluster=cluster,
                                       task_definition=task_definition_1,
                                       assign_public_ip=False,
-                                      
+                                      result_path="$.ecs_task_1_result",  # Store output separately, preserve input
                                       container_overrides=[tasks.ContainerOverride(
                                        container_definition = container_definition_1,
                                           environment=[
@@ -188,11 +188,15 @@ class PDFAccessibility(Stack):
                                           environment=[
                                               tasks.TaskEnvironmentVariable(
                                                   name="S3_BUCKET_NAME",
-                                                  value=sfn.JsonPath.string_at("$.Overrides.ContainerOverrides[0].Environment[0].Value")
+                                                  value=sfn.JsonPath.string_at("$.s3_bucket")
                                               ),
                                               tasks.TaskEnvironmentVariable(
                                                   name="S3_FILE_KEY",
-                                                  value=sfn.JsonPath.string_at("$.Overrides.ContainerOverrides[0].Environment[1].Value")
+                                                  value=sfn.JsonPath.string_at("$.s3_key")
+                                              ),
+                                              tasks.TaskEnvironmentVariable(
+                                                  name="S3_CHUNK_KEY",
+                                                  value=sfn.JsonPath.string_at("$.chunk_key")
                                               ),
                                               tasks.TaskEnvironmentVariable(
                                                   name="AWS_REGION",
