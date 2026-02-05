@@ -68,6 +68,11 @@ def split_pdf_into_pages(source_content, original_key, s3_client, bucket_name, p
     num_pages = len(reader.pages)
     file_basename = original_key.split('/')[-1].rsplit('.', 1)[0]
     
+    # Extract folder path (everything between 'pdf/' and filename)
+    # Example: 'pdf/batch1/subfolder/doc.pdf' -> 'batch1/subfolder'
+    key_without_prefix = original_key.replace('pdf/', '', 1)
+    folder_path = key_without_prefix.rsplit('/', 1)[0] if '/' in key_without_prefix else ''
+    
     chunks = []
 
     # Iterate through the PDF pages in chunks
@@ -85,7 +90,8 @@ def split_pdf_into_pages(source_content, original_key, s3_client, bucket_name, p
         # Create the filename and S3 key for this chunk
         chunk_index = start // pages_per_chunk + 1
         page_filename = f"{file_basename}_chunk_{chunk_index}.pdf"
-        s3_key = f"temp/{file_basename}/{page_filename}"
+        folder_prefix = f"{folder_path}/" if folder_path else ""
+        s3_key = f"temp/{folder_prefix}{file_basename}/{page_filename}"
 
         # Upload the chunk to S3
         s3_client.upload_fileobj(
@@ -98,7 +104,9 @@ def split_pdf_into_pages(source_content, original_key, s3_client, bucket_name, p
         chunks.append({
             "s3_bucket": bucket_name,
             "s3_key": s3_key,
-            "chunk_key": s3_key  # Key for the chunk
+            "chunk_key": s3_key,
+            "original_pdf_key": original_key,  # NEW: Add original path
+            "folder_path": folder_path  # NEW: Add folder path for downstream processes
         })
 
     return chunks
@@ -132,7 +140,7 @@ def lambda_handler(event, context):
         else:
             raise ValueError("Event does not contain 'Records'. Check the S3 event structure.")
         file_basename = pdf_file_key.split('/')[-1].rsplit('.', 1)[0]
-
+        original_pdf_key = pdf_file_key  # Preserve the full original path
 
         s3 = boto3.client('s3')
         stepfunctions = boto3.client('stepfunctions')
@@ -150,7 +158,11 @@ def lambda_handler(event, context):
         # Trigger Step Function with the list of chunks
         response = stepfunctions.start_execution(
             stateMachineArn=state_machine_arn,
-            input=json.dumps({"chunks": chunks, "s3_bucket": bucket_name})
+            input=json.dumps({
+                "chunks": chunks, 
+                "s3_bucket": bucket_name,
+                "original_pdf_key": pdf_file_key  # NEW: Pass original path to Step Functions
+            })
         )
         print(f"Filename - {pdf_file_key} | Step Function started: {response['executionArn']}")
 
