@@ -45,6 +45,10 @@ public class App implements RequestHandler<Map<String, Object>, String> {
             return "No files to merge.";
         }
         
+        // Debug: Print what we received
+        System.out.println("DEBUG: Received pdfKeys: " + pdfKeys);
+        System.out.println("DEBUG: First key: " + pdfKeys.get(0));
+        
         List<String> modifiedPdfKeys = pdfKeys.stream()
             .map(key -> {
                 int lastSlashIndex = key.lastIndexOf('/');
@@ -66,6 +70,11 @@ public class App implements RequestHandler<Map<String, Object>, String> {
 
         String mergedFilePath = "/tmp/merged_" + baseFileName;
         String outputKey = directory + "merged_" + baseFileName;
+        
+        // Debug: Print the extracted values
+        System.out.println("DEBUG: baseFileName: " + baseFileName);
+        System.out.println("DEBUG: directory: " + directory);
+        System.out.println("DEBUG: outputKey: " + outputKey);
 
         try {
             // Download PDFs from S3

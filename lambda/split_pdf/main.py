@@ -101,13 +101,15 @@ def split_pdf_into_pages(source_content, original_key, s3_client, bucket_name, p
         )
         print(f'Filename - {page_filename} | Uploaded {page_filename} to S3 at {s3_key}')
         # Store metadata for the chunk
-        chunks.append({
+        chunk_metadata = {
             "s3_bucket": bucket_name,
             "s3_key": s3_key,
             "chunk_key": s3_key,
             "original_pdf_key": original_key,  # NEW: Add original path
             "folder_path": folder_path  # NEW: Add folder path for downstream processes
-        })
+        }
+        print(f'Filename - {page_filename} | Chunk metadata: {chunk_metadata}')
+        chunks.append(chunk_metadata)
 
     return chunks
 
@@ -156,13 +158,15 @@ def lambda_handler(event, context):
         log_chunk_created(file_basename)
 
         # Trigger Step Function with the list of chunks
+        step_functions_input = {
+            "chunks": chunks, 
+            "s3_bucket": bucket_name,
+            "original_pdf_key": pdf_file_key  # NEW: Pass original path to Step Functions
+        }
+        print(f"Filename - {pdf_file_key} | Step Functions input: {json.dumps(step_functions_input, indent=2)}")
         response = stepfunctions.start_execution(
             stateMachineArn=state_machine_arn,
-            input=json.dumps({
-                "chunks": chunks, 
-                "s3_bucket": bucket_name,
-                "original_pdf_key": pdf_file_key  # NEW: Pass original path to Step Functions
-            })
+            input=json.dumps(step_functions_input)
         )
         print(f"Filename - {pdf_file_key} | Step Function started: {response['executionArn']}")
 

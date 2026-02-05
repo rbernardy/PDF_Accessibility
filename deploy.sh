@@ -420,7 +420,8 @@ EOF
         BUILD_IMAGE="aws/codebuild/amazonlinux-x86_64-standard:5.0"
         COMPUTE_TYPE="BUILD_GENERAL1_SMALL"
         PRIVILEGED_MODE="true"
-        SOURCE_VERSION="main"
+        SOURCE_VERSION="usf-pdfa-updates-1"
+	#SOURCE_VERSION="main"
         BUILDSPEC_FILE="buildspec-unified.yml"
     else
         BUILD_IMAGE="aws/codebuild/amazonlinux2-x86_64-standard:5.0"
@@ -656,7 +657,10 @@ deploy_ui() {
     
     # Clone UI repository to temporary location
     UI_TEMP_DIR="/tmp/pdf-ui-deployment-$$"
+
     print_status "📥 Cloning UI repository..."
+    
+    read -p "RRB check - trying to clone UI ..."
     
     if ! git clone -b main https://github.com/ASUCICREPO/PDF_accessability_UI "$UI_TEMP_DIR" 2>/dev/null; then
         print_error "Failed to clone UI repository. Check internet connection and repository access."
@@ -672,7 +676,9 @@ deploy_ui() {
     export PROJECT_NAME="${PROJECT_NAME}-ui"
     export PDF_TO_PDF_BUCKET="$pdf_to_pdf_bucket"
     export PDF_TO_HTML_BUCKET="$pdf_to_html_bucket"
-    export TARGET_BRANCH="main"
+    
+    export TARGET_BRANCH="usf-pdfa-updates-1"
+    #export TARGET_BRANCH="main"
     
     print_status "🚀 Starting UI deployment..."
     print_status "   This may take 10-15 minutes..."
@@ -861,7 +867,8 @@ print_success "✅ AWS credentials verified. Account: $ACCOUNT_ID, Region: $REGI
 echo ""
 
 # GitHub repository URL (hardcoded)
-GITHUB_URL="https://github.com/ASUCICREPO/PDF_Accessibility.git"
+#GITHUB_URL="https://github.com/ASUCICREPO/PDF_Accessibility.git"
+GITHUB_URL="https://github.com/rbernardy/PDF_Accessibility.git"
 print_success "   Repository: $GITHUB_URL ✅"
 echo ""
 
