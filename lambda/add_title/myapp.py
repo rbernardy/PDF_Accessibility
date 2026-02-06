@@ -266,8 +266,8 @@ def lambda_handler(event, context):
 
         try:
             # Extract folder_path from merged_file_key
-            # Example: temp/drop-in-folder/title/merged_doc.pdf -> drop-in-folder/title
-            # We want to preserve the full folder structure between temp/ and the filename
+            # Example: temp/drop-in-folder/merged_doc.pdf -> drop-in-folder
+            # We want to preserve the folder structure between temp/ and the filename
             merged_key = file_info['merged_file_key']
             key_parts = merged_key.replace('temp/', '').split('/')
             # Extract all folder levels except the filename (last part)

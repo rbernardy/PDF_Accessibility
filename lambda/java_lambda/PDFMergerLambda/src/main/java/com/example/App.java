@@ -65,8 +65,12 @@ public class App implements RequestHandler<Map<String, Object>, String> {
         String baseFileName = pdfKeys.get(0).substring(pdfKeys.get(0).lastIndexOf('/') + 1).replaceAll("_chunk_\\d+", "");
 
         // Extract directory path from first chunk key to preserve folder structure
+        // Example: temp/drop-folder/title/title_chunk_1.pdf -> temp/drop-folder/
+        // We need to go up one level from the title folder to get the drop folder
         String firstKey = pdfKeys.get(0);
         String directory = firstKey.substring(0, firstKey.lastIndexOf('/') + 1);
+        // Remove the title folder (last folder before filename) from the path
+        directory = directory.substring(0, directory.lastIndexOf('/', directory.length() - 2) + 1);
 
         String mergedFilePath = "/tmp/merged_" + baseFileName;
         String outputKey = directory + "merged_" + baseFileName;
