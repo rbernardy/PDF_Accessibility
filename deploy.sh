@@ -417,7 +417,7 @@ EOF
 
     # Auto-detect current Git branch (or use main as fallback)
     CURRENT_BRANCH=$(git rev-parse --abbrev-ref HEAD 2>/dev/null || echo "main")
-    echo "CURRENT_BRANCH=[$CURRENT_BRANCH]."
+    print_status "Detected branch: $CURRENT_BRANCH"
 
     # Set build environment based on solution type
     if [ "$DEPLOYMENT_TYPE" == "pdf2pdf" ]; then
@@ -464,11 +464,6 @@ EOF
     print_status "   Branch: $SOURCE_VERSION"
     print_status "   Buildspec: $BUILDSPEC_FILE"
     print_status "   Solution: $solution_name"
-
-    #rrb
-    echo "Press any key to continue"
-    read myline
-
     echo ""
 
     aws codebuild create-project \
