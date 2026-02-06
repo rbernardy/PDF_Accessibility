@@ -1,0 +1,101 @@
+drtimestamp: 1770332830302
+INIT_START Runtime Version: python:3.12.v102
+Runtime Version ARN: arn:aws:lambda:us-east-1::runtime:e7b9763d75065b03bd2f1c073b67ce436566c24009faa1c13d7389d7ba98f259
+
+timestamp: 1770332830821
+START RequestId: b7317e98-a092-4a65-94db-ec6dadc96695 Version: $LATEST
+
+timestamp: 1770332830822
+Received event:
+{
+  "Records": [
+    {
+      "eventVersion": "2.1",
+      "eventSource": "aws:s3",
+      "awsRegion": "us-east-1",
+      "eventTime": "2026-02-05T23:07:08.982Z",
+      "eventName": "ObjectCreated:Put",
+      "userIdentity": {
+        "principalId": "AWS:AIDAXVOL4T5UEHGBULZ3L"
+      },
+      "requestParameters": {
+        "sourceIPAddress": "131.247.115.26"
+      },
+      "responseElements": {
+        "x-amz-request-id": "9T81N50F9Z932GZ2",
+        "x-amz-id-2": "LCoJB6W3jL4mhY816hRje3J6gEp1OatBUZBXCi/pv/1OwjSF2ZUsk+p2wS03aJnrOR9R/UxmXBcHevvAOqITGrx0DFtwDpIZ"
+      },
+      "s3": {
+        "s3SchemaVersion": "1.0",
+        "configurationId": "OTIyOTk2MzQtNGVmMC00NDkzLTg4YzItZWIzZmIzOTc0OTVj",
+        "bucket": {
+          "name": "pdfaccessibility-pdfaccessibilitybucket149b7021e-s2plyruajrqj",
+          "ownerIdentity": {
+            "principalId": "A13IHBB80XWRN2"
+          },
+          "arn": "arn:aws:s3:::pdfaccessibility-pdfaccessibilitybucket149b7021e-s2plyruajrqj"
+        },
+        "object": {
+          "key": "pdf/pdfa-test-0/A+Route+Navigation+Algorithm+for+Pedestrian+Simulation+Based+on+G.pdf",
+          "size": 1768908,
+          "eTag": "7517af183acd2222e5f2d114bf914625",
+          "sequencer": "006985229CD777A32C"
+        }
+      }
+    }
+  ]
+}
+
+timestamp: 1770332830922
+Filename: pdf/pdfa-test-0/A Route Navigation Algorithm for Pedestrian Simulation Based on G.pdf
+S3 response HTTPStatusCode: 200
+ContentType: application/pdf
+ContentLength: 1768908
+ETag: "7517af183acd2222e5f2d114bf914625"
+
+timestamp: 1770332831688
+Uploaded chunk:
+A Route Navigation Algorithm for Pedestrian Simulation Based on G_chunk_1.pdf
+S3 key:
+temp/pdfa-test-0/A Route Navigation Algorithm for Pedestrian Simulation Based on G/A Route Navigation Algorithm for Pedestrian Simulation Based on G_chunk_1.pdf
+
+Chunk metadata:
+{
+  "s3_bucket": "pdfaccessibility-pdfaccessibilitybucket149b7021e-s2plyruajrqj",
+  "s3_key": "temp/pdfa-test-0/A Route Navigation Algorithm for Pedestrian Simulation Based on G/A Route Navigation Algorithm for Pedestrian Simulation Based on G_chunk_1.pdf",
+  "chunk_key": "temp/pdfa-test-0/A Route Navigation Algorithm for Pedestrian Simulation Based on G/A Route Navigation Algorithm for Pedestrian Simulation Based on G_chunk_1.pdf",
+  "original_pdf_key": "pdf/pdfa-test-0/A Route Navigation Algorithm for Pedestrian Simulation Based on G.pdf",
+  "folder_path": "pdfa-test-0"
+}
+
+Status: Processing
+
+Step Functions input:
+{
+  "chunks": [
+    {
+      "s3_bucket": "pdfaccessibility-pdfaccessibilitybucket149b7021e-s2plyruajrqj",
+      "s3_key": "temp/pdfa-test-0/A Route Navigation Algorithm for Pedestrian Simulation Based on G/A Route Navigation Algorithm for Pedestrian Simulation Based on G_chunk_1.pdf",
+      "chunk_key": "temp/pdfa-test-0/A Route Navigation Algorithm for Pedestrian Simulation Based on G/A Route Navigation Algorithm for Pedestrian Simulation Based on G_chunk_1.pdf",
+      "original_pdf_key": "pdf/pdfa-test-0/A Route Navigation Algorithm for Pedestrian Simulation Based on G.pdf",
+      "folder_path": "pdfa-test-0"
+    }
+  ],
+  "s3_bucket": "pdfaccessibility-pdfaccessibilitybucket149b7021e-s2plyruajrqj",
+  "original_pdf_key": "pdf/pdfa-test-0/A Route Navigation Algorithm for Pedestrian Simulation Based on G.pdf"
+}
+
+timestamp: 1770332831769
+Step Function started:
+arn:aws:states:us-east-1:527097962344:execution:MyStateMachine6C968CA5-DgeJ7SWnmyBM:7277e25b-41a8-4902-be1d-cb49ed8afc9b
+
+timestamp: 1770332831773
+END RequestId: b7317e98-a092-4a65-94db-ec6dadc96695
+
+REPORT
+RequestId: b7317e98-a092-4a65-94db-ec6dadc96695
+Duration: 951.41 ms
+Billed Duration: 1467 ms
+Memory Size: 1024 MB
+Max Memory Used: 137 MB
+Init Duration: 515.39 ms

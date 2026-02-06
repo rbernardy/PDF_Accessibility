@@ -266,11 +266,12 @@ def lambda_handler(event, context):
 
         try:
             # Extract folder_path from merged_file_key
-            # Example: temp/batch1/doc/merged_doc.pdf -> batch1/doc
+            # Example: temp/pdfa-test-0/doc_name/merged_doc.pdf -> pdfa-test-0
+            # We only want the first folder level (the dropped folder), not the document subfolder
             merged_key = file_info['merged_file_key']
             key_parts = merged_key.replace('temp/', '').split('/')
-            # Remove only the filename (last part), keep all folder parts
-            folder_path = '/'.join(key_parts[:-1]) if len(key_parts) > 1 else ''
+            # Extract only the first folder level (dropped folder name)
+            folder_path = key_parts[0] if len(key_parts) > 1 else ''
             print(f"(lambda_handler | Extracted folder_path: {folder_path} from merged_key: {merged_key})")
             
             save_path = save_to_s3(local_path, file_info['bucket'], file_name, folder_path)
