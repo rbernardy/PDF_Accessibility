@@ -415,18 +415,22 @@ EOF
     # Create CodeBuild Project
     print_status "🏗️  Creating CodeBuild project..."
 
+    # Auto-detect current Git branch (or use main as fallback)
+    CURRENT_BRANCH=$(git rev-parse --abbrev-ref HEAD 2>/dev/null || echo "main")
+    echo "CURRENT_BRANCH=[$CURRENT_BRANCH]."
+
     # Set build environment based on solution type
     if [ "$DEPLOYMENT_TYPE" == "pdf2pdf" ]; then
         BUILD_IMAGE="aws/codebuild/amazonlinux-x86_64-standard:5.0"
         COMPUTE_TYPE="BUILD_GENERAL1_SMALL"
         PRIVILEGED_MODE="true"
-        SOURCE_VERSION="main"
+        SOURCE_VERSION="${SOURCE_VERSION:-$CURRENT_BRANCH}"  # Use env var if set, otherwise current branch
         BUILDSPEC_FILE="buildspec-unified.yml"
     else
         BUILD_IMAGE="aws/codebuild/amazonlinux2-x86_64-standard:5.0"
         COMPUTE_TYPE="BUILD_GENERAL1_LARGE"
         PRIVILEGED_MODE="true"
-        SOURCE_VERSION="main"
+        SOURCE_VERSION="${SOURCE_VERSION:-$CURRENT_BRANCH}"  # Use env var if set, otherwise current branch
         BUILDSPEC_FILE="buildspec-unified.yml"
     fi
 
