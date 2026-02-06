@@ -73,8 +73,16 @@ def split_pdf_into_pages(source_content, original_key, s3_client, bucket_name, p
     
     # Enhancement 2: Extract folder path (everything between 'pdf/' and filename)
     # Example: 'pdf/batch1/subfolder/doc.pdf' -> 'batch1/subfolder'
+    # Example: 'pdf/doc.pdf' -> ''
     key_without_prefix = original_key.replace('pdf/', '', 1)
-    folder_path = key_without_prefix.rsplit('/', 1)[0] if '/' in key_without_prefix else ''
+    if '/' in key_without_prefix:
+        # Has subfolder(s): 'batch1/subfolder/doc.pdf' -> 'batch1/subfolder'
+        folder_path = key_without_prefix.rsplit('/', 1)[0]
+    else:
+        # No subfolder: 'doc.pdf' -> ''
+        folder_path = ''
+    
+    print(f"DEBUG split_pdf: original_key={original_key}, file_basename={file_basename}, folder_path='{folder_path}'")
     
     chunks = []
 

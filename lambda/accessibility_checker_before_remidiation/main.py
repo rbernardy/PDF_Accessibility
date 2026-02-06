@@ -73,6 +73,8 @@ def lambda_handler(event, context):
     # Enhancement 1 & 2: Extract original_pdf_key and folder_path from first chunk
     original_pdf_key = None
     folder_path = ''
+    file_basename = None
+    
     if chunks:
         first_chunk = chunks[0]
         s3_key = first_chunk.get('s3_key', None)
@@ -82,11 +84,20 @@ def lambda_handler(event, context):
             import os
             file_basename = os.path.basename(s3_key)
             file_basename = file_basename.split("_chunk_")[0] + os.path.splitext(file_basename)[1]
+    
+    # Fallback: if original_pdf_key is not provided, construct it from file_basename
+    if not original_pdf_key and file_basename:
+        original_pdf_key = f"pdf/{file_basename}"
+        print(f"Warning: original_pdf_key not found in event, using fallback: {original_pdf_key}")
             
     print("File basename:", file_basename)
     print("Original PDF key:", original_pdf_key)
     print("Folder path:", folder_path)
     print("s3_bucket:", s3_bucket)
+    
+    if not file_basename or not original_pdf_key:
+        raise ValueError("Could not determine file_basename or original_pdf_key from event")
+    
     local_path = f"/tmp/{file_basename}"
     download_file_from_s3(s3_bucket, file_basename, local_path, original_pdf_key)
 
