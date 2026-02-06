@@ -460,6 +460,11 @@ EOF
     print_status "   Branch: $SOURCE_VERSION"
     print_status "   Buildspec: $BUILDSPEC_FILE"
     print_status "   Solution: $solution_name"
+
+    #rrb
+    echo "Press any key to continue"
+    read myline
+
     echo ""
 
     aws codebuild create-project \
