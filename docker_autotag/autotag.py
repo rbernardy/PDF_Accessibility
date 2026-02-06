@@ -602,8 +602,10 @@ def main():
 
     try:    
         bucket_name = os.getenv('S3_BUCKET_NAME')
-        file_key = os.getenv('S3_FILE_KEY').split('/')[2]
-        file_base_name = os.getenv('S3_FILE_KEY').split('/')[1]
+        s3_file_key = os.getenv('S3_FILE_KEY')
+        s3_chunk_key = os.getenv('S3_CHUNK_KEY')
+        file_key = s3_chunk_key.split('/')[-1]
+        file_directory = '/'.join(s3_chunk_key.split('/')[:-1])
         logging.info(f'Filename : {file_key} | Bucket Name: {bucket_name}')
         if not bucket_name or not file_key:
             logging.info("Error: S3_BUCKET_NAME and S3_FILE_KEY environment variables are required.")
@@ -613,7 +615,7 @@ def main():
         local_file_path = os.path.basename(file_key)  # Save the file with its original name
         
         # Download the file from S3
-        download_file_from_s3(bucket_name,file_base_name, file_key, local_file_path)
+        s3.download_file(bucket_name, s3_chunk_key, local_file_path)
 
         base_filename = os.path.basename(local_file_path)
         filename = "COMPLIANT_" + base_filename
@@ -640,7 +642,11 @@ def main():
 
         pdf_document.saveIncr()
         pdf_document.close()
-        save_to_s3(filename, bucket_name, "output_autotag",file_base_name, file_key)
+        
+        # Enhancement 2: Update save to use file_directory
+        output_key = f"{file_directory}/output_autotag/COMPLIANT_{file_key}"
+        with open(filename, "rb") as data:
+            s3.upload_fileobj(data, bucket_name, output_key)
 
         logging.info(f"PDF saved with updated metadata and TOC. File location: COMPLIANT_{file_key}")
 
@@ -648,12 +654,12 @@ def main():
         autotag_report_path = f"output/AutotagPDF/{filename}.xlsx"
         images_output_dir = "output/zipfile/images"
 
-        s3_folder_autotag = f"temp/{file_base_name}/output_autotag"
+        s3_folder_autotag = f"{file_directory}/output_autotag"
         extract_images_from_excel(filename,figure_path,autotag_report_path,images_output_dir,bucket_name,s3_folder_autotag,file_key)
         
         logging.info(f'Filename : {file_key} | Processing completed for pdf file')
     except Exception as e:
-        logger.info(f"File: {file_base_name}, Status: Failed in First ECS task")
+        logger.info(f"File: {file_key}, Status: Failed in First ECS task")
         logger.info(f"Filename : {file_key} | Error: {e}")
         sys.exit(1)
         
